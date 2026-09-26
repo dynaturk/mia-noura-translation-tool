@@ -4,30 +4,6 @@ import { AppProvider } from "@shopify/shopify-app-react-router/react";
 import { authenticate } from "../shopify.server";
 
 export const loader = async ({ request }) => {
-  const url = new URL(request.url);
-  const idToken = url.searchParams.get("id_token");
-
-  let tokenAud = null;
-
-  if (idToken) {
-    try {
-      const payload = idToken.split(".")[1];
-      const decoded = JSON.parse(
-        Buffer.from(payload, "base64url").toString("utf8"),
-      );
-
-      tokenAud = decoded.aud;
-    } catch (error) {
-      console.error("AUTH DEBUG: token payload okunamadi");
-    }
-  }
-
-  console.log("AUTH DEBUG", {
-    tokenAud,
-    envApiKey: process.env.SHOPIFY_API_KEY || null,
-    appUrl: process.env.SHOPIFY_APP_URL || null,
-  });
-
   await authenticate.admin(request);
 
   return { apiKey: process.env.SHOPIFY_API_KEY || "" };
