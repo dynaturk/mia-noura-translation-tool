@@ -447,13 +447,15 @@ const optionTranslations = Object.values(
         borderWidth="base"
         borderRadius="base"
       >
-        <s-text type="strong">{color.label}</s-text>
+        <s-stack direction="block" gap="extra-tight">
+  <s-text type="strong">{color.label}</s-text>
 
-<s-text>
-  {color.existingTranslation
-    ? `✓ Çevrildi: ${color.existingTranslation}`
-    : "Eksik"}
-</s-text>
+  <s-text tone={color.existingTranslation ? "success" : "critical"}>
+    {color.existingTranslation
+      ? `✓ Çevrildi: ${color.existingTranslation}`
+      : "Eksik çeviri"}
+  </s-text>
+</s-stack>
 
         <input
           type="hidden"
