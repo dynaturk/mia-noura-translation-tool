@@ -184,6 +184,20 @@ const targetLocale = locales.find(
   const data = await response.json();
   const products = data.data.products.nodes;
 
+const productOptions = [
+  ...new Map(
+    products
+      .flatMap((product) => product.options)
+      .map((option) => [
+        option.id,
+        {
+          id: option.id,
+          name: option.name,
+        },
+      ]),
+  ).values(),
+];
+
   const metaobjectIds = [
     ...new Set(
       products.flatMap((product) =>
@@ -260,8 +274,9 @@ for (const metaobject of metaobjects) {
 
   
 
-  return {
+ return {
   products,
+  productOptions,
   metaobjects,
   locales,
   existingTranslations,
@@ -295,8 +310,21 @@ Vizon: "Mink",
 Karamel: "Caramel",
 };
 
+const OPTION_SUGGESTIONS = {
+  Renk: "Color",
+  Boyut: "Size",
+  Beden: "Size",
+  Size: "Size",
+};
+
 export default function Index() {
-  	const { products, metaobjects, locales, existingTranslations } = useLoaderData();
+  	const {
+  products,
+  productOptions,
+  metaobjects,
+  locales,
+  existingTranslations,
+} = useLoaderData();
 	const actionData = useActionData();
 
 const colorTranslations = metaobjects
@@ -310,6 +338,20 @@ const colorTranslations = metaobjects
     return {
       id: metaobject.id,
       label,
+    };
+  })
+  .filter(Boolean);
+
+const optionTranslations = productOptions
+  .map((option) => {
+    const suggestion = OPTION_SUGGESTIONS[option.name];
+
+    if (!suggestion) return null;
+
+    return {
+      id: option.id,
+      name: option.name,
+      suggestion,
     };
   })
   .filter(Boolean);
@@ -329,6 +371,18 @@ const colorTranslations = metaobjects
     .join(" • ")}
 </s-paragraph>
         </s-paragraph>
+
+</s-section>
+
+<s-section heading="Seçenek Adı Çevirileri">
+  {optionTranslations.map((option) => (
+    <s-box key={option.id} padding="base">
+      <s-text>
+        {option.name} → {option.suggestion}
+      </s-text>
+    </s-box>
+  ))}
+</s-section>
 
 <s-section heading="Renk Çevirileri">
 
