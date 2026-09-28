@@ -338,9 +338,7 @@ const colorTranslations = metaobjects
 
     const englishTranslation =
   existingTranslations[metaobject.id]?.find(
-    (translation) =>
-      translation.key === "label" &&
-      translation.locale === "en",
+    (translation) => translation.key === "label",
   )?.value;
 
 return {
