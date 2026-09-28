@@ -329,6 +329,7 @@ export default function Index() {
 	const actionData = useActionData();
 
 const colorTranslations = metaobjects
+
   .map((metaobject) => {
     const label = metaobject.fields?.find(
       (field) => field.key === "label"
@@ -348,6 +349,12 @@ return {
 };
   })
   .filter(Boolean);
+
+const sortedColorTranslations = [...colorTranslations].sort(
+  (a, b) =>
+    Number(Boolean(a.existingTranslation)) -
+    Number(Boolean(b.existingTranslation)),
+);
 
 const optionTranslations = Object.values(
   productOptions.reduce((groups, option) => {
@@ -440,7 +447,7 @@ const optionTranslations = Object.values(
 
   <Form method="post">
   <s-stack direction="block" gap="base">
-    {colorTranslations.map((color) => (
+    {sortedColorTranslations.map((color) => (
       <s-box
         key={color.id}
         padding="base"
