@@ -342,20 +342,25 @@ const colorTranslations = metaobjects
   })
   .filter(Boolean);
 
-const optionTranslations = productOptions
-  .map((option) => {
+const optionTranslations = Object.values(
+  productOptions.reduce((groups, option) => {
     const suggestion = OPTION_SUGGESTIONS[option.name];
 
-    if (!suggestion) return null;
+    if (!suggestion) return groups;
 
-    return {
-      id: option.id,
-      name: option.name,
-      suggestion,
-    };
-  })
-  .filter(Boolean);
+    if (!groups[option.name]) {
+      groups[option.name] = {
+        name: option.name,
+        suggestion,
+        ids: [],
+      };
+    }
 
+    groups[option.name].ids.push(option.id);
+
+    return groups;
+  }, {}),
+);
   return (
     <s-page heading="Mia Noura Translation Tool">
       <s-section heading="Ürün Seçenekleri">
@@ -376,10 +381,10 @@ const optionTranslations = productOptions
 
 <s-section heading="Seçenek Adı Çevirileri">
   {optionTranslations.map((option) => (
-    <s-box key={option.id} padding="base">
+    <s-box key={option.name} padding="base">
       <s-text>
-        {option.name} → {option.suggestion}
-      </s-text>
+  {option.name} → {option.suggestion} ({option.ids.length} seçenek)
+</s-text>
     </s-box>
   ))}
 </s-section>
