@@ -382,13 +382,47 @@ const optionTranslations = Object.values(
 </s-section>
 
 <s-section heading="Seçenek Adı Çevirileri">
-  {optionTranslations.map((option) => (
-    <s-box key={option.name} padding="base">
-      <s-text>
-  {option.name} → {option.suggestion} ({option.ids.length} seçenek)
-</s-text>
-    </s-box>
-  ))}
+  <Form method="post">
+    <s-stack direction="block" gap="base">
+
+      {optionTranslations.map((option) => (
+        <s-box key={option.name} padding="base">
+
+          <s-text>
+            {option.name} → {option.suggestion} ({option.ids.length} seçenek)
+          </s-text>
+
+          {option.ids.map((id) => (
+            <div key={id}>
+              <input
+                type="hidden"
+                name="resourceId"
+                value={id}
+              />
+
+              <input
+                type="hidden"
+                name="translationValue"
+                value={option.suggestion}
+              />
+
+              <input
+                type="hidden"
+                name="translationKey"
+                value="name"
+              />
+            </div>
+          ))}
+
+        </s-box>
+      ))}
+
+      <s-button type="submit" variant="primary">
+        Seçenek Adlarını Kaydet
+      </s-button>
+
+    </s-stack>
+  </Form>
 </s-section>
 
 <s-section heading="Renk Çevirileri">
