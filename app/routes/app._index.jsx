@@ -482,7 +482,9 @@ const optionTranslations = productOptions
   </s-paragraph>
 )}
 
-	<Form method="post">
+</s-stack>
+
+<Form method="post">
   <input
     type="hidden"
     name="resourceId"
@@ -499,8 +501,6 @@ const optionTranslations = productOptions
     Antrasit → Anthracite Çevir
   </s-button>
 </Form>
-        </s-stack>
-      </s-section>
-    </s-page>
-  );
+</s-page>
+);
 }
