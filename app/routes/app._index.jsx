@@ -253,7 +253,7 @@ for (const metaobject of metaobjects) {
     `#graphql
       query GetExistingTranslation($resourceId: ID!) {
         translatableResource(resourceId: $resourceId) {
-          translations(locale: "tr") {
+          translations(locale: "en") {
             key
             value
             locale
