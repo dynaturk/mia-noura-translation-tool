@@ -316,7 +316,6 @@ const OPTION_SUGGESTIONS = {
   Renk: "Color",
   Boyut: "Size",
   Beden: "Size",
-  Size: "Size",
 };
 
 export default function Index() {
