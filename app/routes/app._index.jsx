@@ -268,6 +268,29 @@ for (const metaobject of metaobjects) {
 };
 };
 
+const COLOR_SUGGESTIONS = {
+  Bej: "Beige",
+  Beyaz: "White",
+  Siyah: "Black",
+  Lacivert: "Navy",
+  Gri: "Grey",
+  Haki: "Khaki",
+  Kahverengi: "Brown",
+  Mürdüm: "Burgundy",
+  Antrasit: "Anthracite",
+  Kırmızı: "Red",
+  Bordo: "Burgundy",
+  Mavi: "Blue",
+  Yeşil: "Green",
+  Sarı: "Yellow",
+  Turuncu: "Orange",
+  Pembe: "Pink",
+  Mor: "Purple",
+  Ekru: "Ecru",
+  Krem: "Cream",
+  Taş: "Stone",
+};
+
 export default function Index() {
   	const { products, metaobjects, locales, existingTranslations } = useLoaderData();
 	const actionData = useActionData();
@@ -332,10 +355,12 @@ const colorTranslations = metaobjects
           label="Çeviri"
           name="translationValue"
           value={
-            existingTranslations[color.id]?.find(
-              (translation) => translation.key === "label"
-            )?.value || ""
-          }
+  existingTranslations[color.id]?.find(
+    (translation) => translation.key === "label"
+  )?.value ||
+  COLOR_SUGGESTIONS[color.label] ||
+  ""
+}
         ></s-text-field>
       </s-box>
     ))}
