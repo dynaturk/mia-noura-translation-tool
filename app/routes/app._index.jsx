@@ -135,7 +135,7 @@ translatableContentDigest: translatableContent.digest,
 
 return {
   success: true,
-  message: `${savedTranslations.length} renk çevirisi kaydedildi.`,
+  message: `${savedTranslations.length} çeviri kaydedildi.`,
 };
 };
 
@@ -524,23 +524,7 @@ const optionTranslations = Object.values(
 
 </s-stack>
 
-<Form method="post">
-  <input
-    type="hidden"
-    name="resourceId"
-    value="gid://shopify/Metaobject/539641544934"
-  />
 
-  <input
-    type="hidden"
-    name="translationValue"
-    value="Anthracite"
-  />
-
-  <s-button type="submit" variant="primary">
-    Antrasit → Anthracite Çevir
-  </s-button>
-</Form>
 </s-page>
 );
 }
