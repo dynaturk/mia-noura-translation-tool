@@ -26,6 +26,7 @@ const targetLocale = actionLocales.find(
 
   const resourceIds = formData.getAll("resourceId");
 const translationValues = formData.getAll("translationValue");
+const translationKeys = formData.getAll("translationKey");
 
 if (!targetLocale) {
   return {
@@ -38,7 +39,8 @@ if (!targetLocale) {
 
 for (let i = 0; i < resourceIds.length; i++) {
   const resourceId = resourceIds[i];
-  const translationValue = translationValues[i]?.trim();
+const translationValue = translationValues[i]?.trim();
+const translationKey = translationKeys[i] || "label";
 
   if (!resourceId || !translationValue) {
     continue;
@@ -67,15 +69,15 @@ for (let i = 0; i < resourceIds.length; i++) {
 
   const digestData = await digestResponse.json();
 
-  const labelContent =
-    digestData.data?.translatableResource?.translatableContent?.find(
-      (item) => item.key === "label",
-    );
+  const translatableContent =
+  digestData.data?.translatableResource?.translatableContent?.find(
+    (item) => item.key === translationKey,
+  );
 
-  if (!labelContent?.digest) {
+  if (!translatableContent?.digest) {
     return {
       success: false,
-      message: "Metaobject label bilgisi veya digest bulunamadı.",
+      message: "Çevrilebilir alan veya digest bulunamadı.",
     };
   }
 
@@ -107,9 +109,9 @@ for (let i = 0; i < resourceIds.length; i++) {
         translations: [
           {
             locale: targetLocale,
-            key: "label",
-            value: translationValue,
-            translatableContentDigest: labelContent.digest,
+            key: translationKey,
+value: translationValue,
+translatableContentDigest: translatableContent.digest,
           },
         ],
       },
