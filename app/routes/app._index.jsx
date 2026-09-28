@@ -451,6 +451,12 @@ const optionTranslations = Object.values(
       >
         <s-text type="strong">{color.label}</s-text>
 
+<s-text>
+  {color.existingTranslation
+    ? `✓ Çevrildi: ${color.existingTranslation}`
+    : "Eksik"}
+</s-text>
+
         <input
           type="hidden"
           name="resourceId"
