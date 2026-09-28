@@ -289,6 +289,10 @@ const COLOR_SUGGESTIONS = {
   Ekru: "Ecru",
   Krem: "Cream",
   Taş: "Stone",
+"Açık Kahverengi": "Light Brown",
+"Koyu Kahverengi": "Dark Brown",
+Vizon: "Mink",
+Karamel: "Caramel",
 };
 
 export default function Index() {
