@@ -356,6 +356,10 @@ const sortedColorTranslations = [...colorTranslations].sort(
     Number(Boolean(b.existingTranslation)),
 );
 
+const missingColorCount = colorTranslations.filter(
+  (color) => !color.existingTranslation,
+).length;
+
 const optionTranslations = Object.values(
   productOptions.reduce((groups, option) => {
     const suggestion = OPTION_SUGGESTIONS[option.name];
@@ -438,6 +442,12 @@ const optionTranslations = Object.values(
 </s-section>
 
 <s-section heading="Renk Çevirileri">
+
+<s-text tone={missingColorCount > 0 ? "critical" : "success"}>
+  {missingColorCount > 0
+    ? `Eksik renk çevirisi: ${missingColorCount}`
+    : "✓ Tüm renk çevirileri tamamlandı"}
+</s-text>
 
 {actionData?.message && (
   <s-paragraph>
