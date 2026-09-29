@@ -550,8 +550,8 @@ const optionTranslations = Object.values(
       ))}
 
       <s-button type="submit" variant="primary">
-        Seçenek Adlarını Kaydet
-      </s-button>
+  Seçenek Adlarını Kaydet
+</s-button>
 
     </s-stack>
   </Form>
@@ -683,9 +683,11 @@ const optionTranslations = Object.values(
       </s-box>
     ))}
 
-    <s-button type="submit" variant="primary">
-      Tüm Çevirileri Kaydet
-    </s-button>
+    {(!showOnlyMissingColors || incompleteColors.length > 0) && (
+  <s-button type="submit" variant="primary">
+    Tüm Çevirileri Kaydet
+  </s-button>
+)}
   </s-stack>
 </Form>
 </s-section>
