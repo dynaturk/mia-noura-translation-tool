@@ -33,6 +33,7 @@ const translationKeys = formData.getAll("translationKey");
 if (!targetLocale) {
   return {
     success: false,
+    formType,
     message: "Çeviri yapılacak ikinci bir yayınlanmış dil bulunamadı.",
   };
 }
@@ -79,6 +80,7 @@ const translationKey = translationKeys[i] || "label";
   if (!translatableContent?.digest) {
     return {
       success: false,
+      formType,
       message: "Çevrilebilir alan veya digest bulunamadı.",
     };
   }
@@ -128,6 +130,7 @@ translatableContentDigest: translatableContent.digest,
   if (errors.length > 0) {
     return {
       success: false,
+      formType,
       message: errors.map((error) => error.message).join(", "),
     };
   }
@@ -137,6 +140,7 @@ translatableContentDigest: translatableContent.digest,
 
 return {
   success: true,
+  formType,
   message: `${savedTranslations.length} çeviri kaydedildi.`,
 };
 };
@@ -518,6 +522,12 @@ const optionTranslations = Object.values(
 
 <s-section heading="Seçenek Adı Çevirileri">
   <Form method="post">
+    <input
+      type="hidden"
+      name="formType"
+      value="optionTranslations"
+    />
+
     <s-stack direction="block" gap="base">
 
       {optionTranslations.map((option) => (
@@ -555,6 +565,12 @@ const optionTranslations = Object.values(
       <s-button type="submit" variant="primary">
   Seçenek Adlarını Kaydet
 </s-button>
+
+{actionData?.formType === "optionTranslations" && actionData?.message && (
+  <s-text tone={actionData.success ? "success" : "critical"}>
+    {actionData.message}
+  </s-text>
+)}
 
     </s-stack>
   </Form>
@@ -662,7 +678,7 @@ const optionTranslations = Object.values(
   Ürün Çevirilerini Kaydet
 </s-button>
 
-{actionData?.message && (
+{actionData?.formType === "productTranslations" && actionData?.message && (
   <s-text tone={actionData.success ? "success" : "critical"}>
     {actionData.message}
   </s-text>
@@ -693,12 +709,6 @@ const optionTranslations = Object.values(
   <s-text tone="success">
     ✓ Eksik renk çevirisi yok
   </s-text>
-)}
-
-{actionData?.message && (
-  <s-paragraph>
-    {actionData.message}
-  </s-paragraph>
 )}
 
   <Form method="post">
@@ -755,20 +765,16 @@ const optionTranslations = Object.values(
     Tüm Çevirileri Kaydet
   </s-button>
 )}
+
+{actionData?.formType === "colorTranslations" && actionData?.message && (
+  <s-text tone={actionData.success ? "success" : "critical"}>
+    {actionData.message}
+  </s-text>
+)}
+
   </s-stack>
 </Form>
 </s-section>
-
-        <s-stack direction="block" gap="base">
-      
-{actionData?.message && (
-  <s-paragraph>
-    {actionData.message}
-  </s-paragraph>
-)}
-
-</s-stack>
-
 
 </s-page>
 );
