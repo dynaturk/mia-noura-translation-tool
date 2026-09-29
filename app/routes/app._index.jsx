@@ -693,51 +693,7 @@ const optionTranslations = Object.values(
 </s-section>
 
         <s-stack direction="block" gap="base">
-          {products.map((product) => (
-            <s-box
-              key={product.id}
-              padding="base"
-              borderWidth="base"
-              borderRadius="base"
-            >
-              <s-text type="strong">{product.title}</s-text>
-
-              {product.options.map((option) => (
-                <s-box key={option.id} paddingBlockStart="base">
-                  <s-text type="strong">
-                    Seçenek: {option.name}
-                  </s-text>
-
-                  {option.optionValues.map((value) => (
-                    <s-paragraph key={value.id}>
-                      {value.name}
-                      {value.linkedMetafieldValue ? (
-  <>
-    {" — "}
-    {(() => {
-      const metaobject = metaobjects.find(
-        (item) => item.id === value.linkedMetafieldValue,
-      );
-
-      const label = metaobject?.fields?.find(
-        (field) => field.key === "label",
-      )?.value;
-
-      return label
-        ? `Metaobject etiketi: ${label}`
-        : "Metaobject bulundu, etiket yok";
-    })()}
-  </>
-) : (
-  " — Standart değer"
-)}
-                        
-                    </s-paragraph>
-                  ))}
-                </s-box>
-              ))}
-            </s-box>
-          ))}
+      
 {actionData?.message && (
   <s-paragraph>
     {actionData.message}
