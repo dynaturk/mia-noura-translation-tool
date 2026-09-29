@@ -489,6 +489,37 @@ const optionTranslations = Object.values(
   </Form>
 </s-section>
 
+<s-section heading="Ürün Çevirileri">
+  <s-stack direction="block" gap="base">
+    {productTranslationStatus.map((product) => (
+      <s-box
+        key={product.id}
+        padding="base"
+        borderWidth="base"
+        borderRadius="base"
+      >
+        <s-stack direction="block" gap="extra-tight">
+          <s-text type="strong">{product.title}</s-text>
+
+          <s-text tone={product.titleTranslated ? "success" : "critical"}>
+            {product.titleTranslated
+              ? "✓ Başlık çevrildi"
+              : "Eksik başlık çevirisi"}
+          </s-text>
+
+          <s-text
+            tone={product.descriptionTranslated ? "success" : "critical"}
+          >
+            {product.descriptionTranslated
+              ? "✓ Açıklama çevrildi"
+              : "Eksik açıklama çevirisi"}
+          </s-text>
+        </s-stack>
+      </s-box>
+    ))}
+  </s-stack>
+</s-section>
+
 <s-section heading="Renk Çevirileri">
 
 <s-text tone={missingColorCount > 0 ? "critical" : "success"}>
