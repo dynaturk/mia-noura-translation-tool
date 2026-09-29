@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { Form, useActionData, useLoaderData } from "react-router";
 import { authenticate } from "../shopify.server";
 
@@ -357,6 +358,8 @@ export default function Index() {
 } = useLoaderData();
 	const actionData = useActionData();
 
+const [showOnlyMissingProducts, setShowOnlyMissingProducts] = useState(false);
+
 const productTranslationStatus = products.map((product) => {
   const translations = productTranslations[product.id] || [];
 
@@ -554,8 +557,18 @@ const optionTranslations = Object.values(
     ? `Eksik ürün çevirisi: ${missingProductCount}`
     : "✓ Tüm ürün başlıkları ve açıklamaları çevrildi"}
 </s-text>
+
+<s-button
+  onClick={() => setShowOnlyMissingProducts(!showOnlyMissingProducts)}
+  variant="secondary"
+>
+  {showOnlyMissingProducts
+    ? "Tüm ürünleri göster"
+    : "Sadece eksikleri göster"}
+</s-button>
+
   <s-stack direction="block" gap="base">
-    {(missingProductCount > 0
+    {(showOnlyMissingProducts
   ? incompleteProducts
   : sortedProductTranslationStatus
 ).map((product) => (
