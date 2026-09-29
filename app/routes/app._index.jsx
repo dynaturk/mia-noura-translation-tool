@@ -353,8 +353,28 @@ export default function Index() {
   metaobjects,
   locales,
   existingTranslations,
+  productTranslations,
 } = useLoaderData();
 	const actionData = useActionData();
+
+const productTranslationStatus = products.map((product) => {
+  const translations = productTranslations[product.id] || [];
+
+  const titleTranslation = translations.find(
+    (translation) => translation.key === "title",
+  )?.value;
+
+  const descriptionTranslation = translations.find(
+    (translation) => translation.key === "body_html",
+  )?.value;
+
+  return {
+    id: product.id,
+    title: product.title,
+    titleTranslated: Boolean(titleTranslation),
+    descriptionTranslated: Boolean(descriptionTranslation),
+  };
+});
 
 const colorTranslations = metaobjects
 
