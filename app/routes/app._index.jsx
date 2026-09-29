@@ -24,6 +24,7 @@ const targetLocale = actionLocales.find(
   (locale) => !locale.primary && locale.published,
 )?.locale;
   const formData = await request.formData();
+const formType = formData.get("formType");
 
   const resourceIds = formData.getAll("resourceId");
 const translationValues = formData.getAll("translationValue");
@@ -582,6 +583,13 @@ const optionTranslations = Object.values(
 )}
 
 <Form method="post">
+
+<input
+  type="hidden"
+  name="formType"
+  value="productTranslations"
+/>
+
   <s-stack direction="block" gap="base">
     {(showOnlyMissingProducts
   ? incompleteProducts
@@ -694,6 +702,13 @@ const optionTranslations = Object.values(
 )}
 
   <Form method="post">
+
+<input
+  type="hidden"
+  name="formType"
+  value="colorTranslations"
+/>
+
   <s-stack direction="block" gap="base">
     {(showOnlyMissingColors
   ? incompleteColors
