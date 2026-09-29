@@ -654,6 +654,12 @@ const optionTranslations = Object.values(
   Ürün Çevirilerini Kaydet
 </s-button>
 
+{actionData?.message && (
+  <s-text tone={actionData.success ? "success" : "critical"}>
+    {actionData.message}
+  </s-text>
+)}
+
 </s-stack>
 </Form>
 </s-section>
