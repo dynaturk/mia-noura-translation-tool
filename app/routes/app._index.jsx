@@ -376,6 +376,22 @@ const productTranslationStatus = products.map((product) => {
   };
 });
 
+const sortedProductTranslationStatus = [...productTranslationStatus].sort(
+  (a, b) => {
+    const aMissing =
+      Number(!a.titleTranslated) + Number(!a.descriptionTranslated);
+    const bMissing =
+      Number(!b.titleTranslated) + Number(!b.descriptionTranslated);
+
+    return bMissing - aMissing;
+  },
+);
+
+const missingProductCount = productTranslationStatus.filter(
+  (product) =>
+    !product.titleTranslated || !product.descriptionTranslated,
+).length;
+
 const colorTranslations = metaobjects
 
   .map((metaobject) => {
@@ -490,8 +506,13 @@ const optionTranslations = Object.values(
 </s-section>
 
 <s-section heading="Ürün Çevirileri">
+<s-text tone={missingProductCount > 0 ? "critical" : "success"}>
+  {missingProductCount > 0
+    ? `Eksik ürün çevirisi: ${missingProductCount}`
+    : "✓ Tüm ürün başlıkları ve açıklamaları çevrildi"}
+</s-text>
   <s-stack direction="block" gap="base">
-    {productTranslationStatus.map((product) => (
+    {sortedProductTranslationStatus.map((product) => (
       <s-box
         key={product.id}
         padding="base"
