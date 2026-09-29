@@ -29,6 +29,7 @@ const formType = formData.get("formType");
   const resourceIds = formData.getAll("resourceId");
 const translationValues = formData.getAll("translationValue");
 const translationKeys = formData.getAll("translationKey");
+const originalTranslationValues = formData.getAll("originalTranslationValue");
 
 if (!targetLocale) {
   return {
@@ -44,6 +45,11 @@ for (let i = 0; i < resourceIds.length; i++) {
   const resourceId = resourceIds[i];
 const translationValue = translationValues[i]?.trim();
 const translationKey = translationKeys[i] || "label";
+const originalTranslationValue = originalTranslationValues[i]?.trim() || "";
+
+  if (translationValue === originalTranslationValue) {
+    continue;
+  }
 
   if (!resourceId || !translationValue) {
     continue;
@@ -141,7 +147,10 @@ translatableContentDigest: translatableContent.digest,
 return {
   success: true,
   formType,
-  message: `${savedTranslations.length} çeviri kaydedildi.`,
+  message:
+    savedTranslations.length > 0
+      ? `${savedTranslations.length} çeviri kaydedildi.`
+      : "Değişiklik yok; hiçbir çeviri yeniden kaydedilmedi.",
 };
 };
 
@@ -628,6 +637,12 @@ const optionTranslations = Object.values(
 
 <input
   type="hidden"
+  name="originalTranslationValue"
+  value={product.titleTranslation}
+/>
+
+<input
+  type="hidden"
   name="resourceId"
   value={product.id}
 />
@@ -643,6 +658,12 @@ const optionTranslations = Object.values(
   name="translationValue"
   value={product.descriptionTranslation}
   multiline={4}
+/>
+
+<input
+  type="hidden"
+  name="originalTranslationValue"
+  value={product.descriptionTranslation}
 />
 
 <input
@@ -757,6 +778,12 @@ const optionTranslations = Object.values(
   ""
 }
         ></s-text-field>
+
+        <input
+          type="hidden"
+          name="originalTranslationValue"
+          value={color.existingTranslation}
+        />
       </s-box>
     ))}
 
