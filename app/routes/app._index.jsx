@@ -374,11 +374,13 @@ const productTranslationStatus = products.map((product) => {
   )?.value;
 
   return {
-    id: product.id,
-    title: product.title,
-    titleTranslated: Boolean(titleTranslation),
-    descriptionTranslated: Boolean(descriptionTranslation),
-  };
+  id: product.id,
+  title: product.title,
+  titleTranslation: titleTranslation || "",
+  descriptionTranslation: descriptionTranslation || "",
+  titleTranslated: Boolean(titleTranslation),
+  descriptionTranslated: Boolean(descriptionTranslation),
+};
 });
 
 const sortedProductTranslationStatus = [...productTranslationStatus].sort(
@@ -579,6 +581,7 @@ const optionTranslations = Object.values(
   </s-text>
 )}
 
+<Form method="post">
   <s-stack direction="block" gap="base">
     {(showOnlyMissingProducts
   ? incompleteProducts
@@ -592,6 +595,43 @@ const optionTranslations = Object.values(
       >
         <s-stack direction="block" gap="extra-tight">
           <s-text type="strong">{product.title}</s-text>
+
+<s-text-field
+  label="İngilizce Başlık"
+  name="translationValue"
+  value={product.titleTranslation}
+/>
+
+<input
+  type="hidden"
+  name="resourceId"
+  value={product.id}
+/>
+
+<input
+  type="hidden"
+  name="translationKey"
+  value="title"
+/>
+
+<s-text-field
+  label="İngilizce Açıklama"
+  name="translationValue"
+  value={product.descriptionTranslation}
+  multiline={4}
+/>
+
+<input
+  type="hidden"
+  name="resourceId"
+  value={product.id}
+/>
+
+<input
+  type="hidden"
+  name="translationKey"
+  value="body_html"
+/>
 
           <s-text tone={product.titleTranslated ? "success" : "critical"}>
             {product.titleTranslated
@@ -609,7 +649,13 @@ const optionTranslations = Object.values(
         </s-stack>
       </s-box>
     ))}
-  </s-stack>
+
+<s-button type="submit" variant="primary">
+  Ürün Çevirilerini Kaydet
+</s-button>
+
+</s-stack>
+</Form>
 </s-section>
 
 <s-section heading="Renk Çevirileri">
