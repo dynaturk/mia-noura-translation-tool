@@ -567,6 +567,12 @@ const optionTranslations = Object.values(
     : "Sadece eksikleri göster"}
 </s-button>
 
+{showOnlyMissingProducts && incompleteProducts.length === 0 && (
+  <s-text tone="success">
+    ✓ Eksik ürün çevirisi yok
+  </s-text>
+)}
+
   <s-stack direction="block" gap="base">
     {(showOnlyMissingProducts
   ? incompleteProducts
