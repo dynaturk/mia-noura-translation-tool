@@ -360,6 +360,8 @@ export default function Index() {
 
 const [showOnlyMissingProducts, setShowOnlyMissingProducts] = useState(false);
 
+const [showOnlyMissingColors, setShowOnlyMissingColors] = useState(false);
+
 const productTranslationStatus = products.map((product) => {
   const translations = productTranslations[product.id] || [];
 
@@ -431,6 +433,10 @@ const sortedColorTranslations = [...colorTranslations].sort(
 const missingColorCount = colorTranslations.filter(
   (color) => !color.existingTranslation,
 ).length;
+
+const incompleteColors = sortedColorTranslations.filter(
+  (color) => !color.existingTranslation,
+);
 
 const totalProductCount = products.length;
 
@@ -608,11 +614,26 @@ const optionTranslations = Object.values(
 
 <s-section heading="Renk Çevirileri">
 
-<s-text tone={missingColorCount > 0 ? "critical" : "success"}>
-  {missingColorCount > 0
-    ? `Eksik renk çevirisi: ${missingColorCount}`
-    : "✓ Tüm renk çevirileri tamamlandı"}
-</s-text>
+  <s-text tone={missingColorCount > 0 ? "critical" : "success"}>
+    {missingColorCount > 0
+      ? `Eksik renk çevirisi: ${missingColorCount}`
+      : "✓ Tüm renk çevirileri tamamlandı"}
+  </s-text>
+
+  <s-button
+    onClick={() => setShowOnlyMissingColors(!showOnlyMissingColors)}
+    variant="secondary"
+  >
+    {showOnlyMissingColors
+      ? "Tüm renkleri göster"
+      : "Sadece eksik renkleri göster"}
+  </s-button>
+
+{showOnlyMissingColors && incompleteColors.length === 0 && (
+  <s-text tone="success">
+    ✓ Eksik renk çevirisi yok
+  </s-text>
+)}
 
 {actionData?.message && (
   <s-paragraph>
@@ -622,7 +643,10 @@ const optionTranslations = Object.values(
 
   <Form method="post">
   <s-stack direction="block" gap="base">
-    {sortedColorTranslations.map((color) => (
+    {(showOnlyMissingColors
+  ? incompleteColors
+  : sortedColorTranslations
+).map((color) => (
       <s-box
         key={color.id}
         padding="base"
