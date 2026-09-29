@@ -424,6 +424,16 @@ const missingColorCount = colorTranslations.filter(
   (color) => !color.existingTranslation,
 ).length;
 
+const totalProductCount = products.length;
+
+const translatedProductCount =
+  totalProductCount - missingProductCount;
+
+const totalColorCount = colorTranslations.length;
+
+const translatedColorCount =
+  totalColorCount - missingColorCount;
+
 const optionTranslations = Object.values(
   productOptions.reduce((groups, option) => {
     const suggestion = OPTION_SUGGESTIONS[option.name];
@@ -445,6 +455,34 @@ const optionTranslations = Object.values(
 );
   return (
     <s-page heading="Mia Noura Translation Tool">
+
+<s-section heading="Özet">
+  <s-stack direction="inline" gap="base">
+    <s-box padding="base" borderWidth="base" borderRadius="base">
+      <s-text type="strong">Ürünler</s-text>
+      <s-text>
+        {translatedProductCount} / {totalProductCount} çevrildi
+      </s-text>
+    </s-box>
+
+    <s-box padding="base" borderWidth="base" borderRadius="base">
+      <s-text type="strong">Renkler</s-text>
+      <s-text>
+        {translatedColorCount} / {totalColorCount} çevrildi
+      </s-text>
+    </s-box>
+
+    <s-box padding="base" borderWidth="base" borderRadius="base">
+      <s-text type="strong">Eksikler</s-text>
+      <s-text tone={missingProductCount + missingColorCount > 0 ? "critical" : "success"}>
+        {missingProductCount + missingColorCount > 0
+          ? `${missingProductCount + missingColorCount} eksik`
+          : "✓ Eksik yok"}
+      </s-text>
+    </s-box>
+  </s-stack>
+</s-section>
+
       <s-section heading="Ürün Seçenekleri">
         <s-paragraph>
           Shopify mağazasından {products.length} ürün bulundu.
