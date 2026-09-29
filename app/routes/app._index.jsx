@@ -274,7 +274,34 @@ for (const metaobject of metaobjects) {
     translationData.data?.translatableResource?.translations || [];
 }
 
-  
+  let productTranslations = {};
+
+for (const product of products) {
+  const productTranslationResponse = await admin.graphql(
+    `#graphql
+      query GetProductTranslations($resourceId: ID!) {
+        translatableResource(resourceId: $resourceId) {
+          translations(locale: "en") {
+            key
+            value
+            locale
+          }
+        }
+      }
+    `,
+    {
+      variables: {
+        resourceId: product.id,
+      },
+    },
+  );
+
+  const productTranslationData =
+    await productTranslationResponse.json();
+
+  productTranslations[product.id] =
+    productTranslationData.data?.translatableResource?.translations || [];
+}
 
  return {
   products,
@@ -282,6 +309,7 @@ for (const metaobject of metaobjects) {
   metaobjects,
   locales,
   existingTranslations,
+  productTranslations,
 };
 };
 
