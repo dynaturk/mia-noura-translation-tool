@@ -392,6 +392,11 @@ const missingProductCount = productTranslationStatus.filter(
     !product.titleTranslated || !product.descriptionTranslated,
 ).length;
 
+const incompleteProducts = sortedProductTranslationStatus.filter(
+  (product) =>
+    !product.titleTranslated || !product.descriptionTranslated,
+);
+
 const colorTranslations = metaobjects
 
   .map((metaobject) => {
@@ -550,7 +555,10 @@ const optionTranslations = Object.values(
     : "✓ Tüm ürün başlıkları ve açıklamaları çevrildi"}
 </s-text>
   <s-stack direction="block" gap="base">
-    {sortedProductTranslationStatus.map((product) => (
+    {(missingProductCount > 0
+  ? incompleteProducts
+  : sortedProductTranslationStatus
+).map((product) => (
       <s-box
         key={product.id}
         padding="base"
