@@ -2,6 +2,51 @@ import { useState } from "react";
 import { Form, useActionData, useLoaderData } from "react-router";
 import { authenticate } from "../shopify.server";
 
+const decodeHtmlEntities = (value = "") =>
+  value
+    .replace(/&nbsp;/gi, " ")
+    .replace(/&amp;/gi, "&")
+    .replace(/&lt;/gi, "<")
+    .replace(/&gt;/gi, ">")
+    .replace(/&quot;/gi, '\"')
+    .replace(/&#39;/gi, "'")
+    .replace(/&#(\d+);/g, (_, code) => String.fromCharCode(Number(code)));
+
+const htmlToPlainText = (html = "") =>
+  decodeHtmlEntities(
+    html
+      .replace(/<br\s*\/?\s*>/gi, "\n")
+      .replace(/<\/p\s*>/gi, "\n\n")
+      .replace(/<\/div\s*>/gi, "\n")
+      .replace(/<li[^>]*>/gi, "• ")
+      .replace(/<\/li\s*>/gi, "\n")
+      .replace(/<[^>]+>/g, ""),
+  )
+    .replace(/\r/g, "")
+    .replace(/[ \t]+\n/g, "\n")
+    .replace(/\n{3,}/g, "\n\n")
+    .trim();
+
+const escapeHtml = (value = "") =>
+  value
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#39;");
+
+const plainTextToHtml = (text = "") =>
+  text
+    .replace(/\r/g, "")
+    .trim()
+    .split(/\n{2,}/)
+    .filter((paragraph) => paragraph.trim())
+    .map(
+      (paragraph) =>
+        `<p>${escapeHtml(paragraph.trim()).replace(/\n/g, "<br>")}</p>`,
+    )
+    .join("");
+
 export const action = async ({ request }) => {
   const { admin } = await authenticate.admin(request);
 	const actionLocalesResponse = await admin.graphql(
@@ -54,6 +99,11 @@ const originalTranslationValue = originalTranslationValues[i]?.trim() || "";
   if (!resourceId || !translationValue) {
     continue;
   }
+
+  const valueForShopify =
+    translationKey === "body_html"
+      ? plainTextToHtml(translationValue)
+      : translationValue;
 
   const digestResponse = await admin.graphql(
     `#graphql
@@ -120,7 +170,7 @@ const originalTranslationValue = originalTranslationValues[i]?.trim() || "";
           {
             locale: targetLocale,
             key: translationKey,
-value: translationValue,
+value: valueForShopify,
 translatableContentDigest: translatableContent.digest,
           },
         ],
@@ -141,7 +191,7 @@ translatableContentDigest: translatableContent.digest,
     };
   }
 
-  savedTranslations.push(translationValue);
+  savedTranslations.push(valueForShopify);
 }
 
 return {
@@ -383,17 +433,21 @@ const productTranslationStatus = products.map((product) => {
     (translation) => translation.key === "title",
   )?.value;
 
-  const descriptionTranslation = translations.find(
+  const descriptionTranslationHtml = translations.find(
     (translation) => translation.key === "body_html",
   )?.value;
+
+  const descriptionTranslation = htmlToPlainText(
+    descriptionTranslationHtml || "",
+  );
 
   return {
   id: product.id,
   title: product.title,
   titleTranslation: titleTranslation || "",
-  descriptionTranslation: descriptionTranslation || "",
+  descriptionTranslation,
   titleTranslated: Boolean(titleTranslation),
-  descriptionTranslated: Boolean(descriptionTranslation),
+  descriptionTranslated: Boolean(descriptionTranslationHtml),
 };
 });
 
@@ -606,6 +660,10 @@ const optionTranslations = Object.values(
     ✓ Eksik ürün çevirisi yok
   </s-text>
 )}
+
+<s-paragraph>
+  Açıklamalar düzenlerken HTML etiketleri gizlenir. Kaydettiğinde metin Shopify için temiz HTML olarak saklanır.
+</s-paragraph>
 
 <Form method="post">
 
