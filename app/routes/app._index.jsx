@@ -426,6 +426,7 @@ const [showOnlyMissingProducts, setShowOnlyMissingProducts] = useState(false);
 const [productSearch, setProductSearch] = useState("");
 
 const [showOnlyMissingColors, setShowOnlyMissingColors] = useState(false);
+const [colorSearch, setColorSearch] = useState("");
 
 const productTranslationStatus = products.map((product) => {
   const translations = productTranslations[product.id] || [];
@@ -529,6 +530,27 @@ const missingColorCount = colorTranslations.filter(
 const incompleteColors = sortedColorTranslations.filter(
   (color) => !color.existingTranslation,
 );
+
+const normalizedColorSearch = colorSearch.trim().toLocaleLowerCase("tr-TR");
+
+const visibleColors = (
+  showOnlyMissingColors
+    ? incompleteColors
+    : sortedColorTranslations
+).filter((color) => {
+  if (!normalizedColorSearch) return true;
+
+  const searchableText = [
+    color.label,
+    color.existingTranslation,
+    COLOR_SUGGESTIONS[color.label],
+  ]
+    .filter(Boolean)
+    .join(" ")
+    .toLocaleLowerCase("tr-TR");
+
+  return searchableText.includes(normalizedColorSearch);
+});
 
 const totalProductCount = products.length;
 
@@ -711,7 +733,7 @@ const optionTranslations = Object.values(
 />
 
   <s-stack direction="block" gap="base">
-    {visibleProducts.length === 0 && (
+    {productSearch.trim() && visibleProducts.length === 0 && (
       <s-text>
         Aramana uyan ürün bulunamadı.
       </s-text>
@@ -815,14 +837,29 @@ const optionTranslations = Object.values(
       : "✓ Tüm renk çevirileri tamamlandı"}
   </s-text>
 
-  <s-button
-    onClick={() => setShowOnlyMissingColors(!showOnlyMissingColors)}
-    variant="secondary"
-  >
-    {showOnlyMissingColors
-      ? "Tüm renkleri göster"
-      : "Sadece eksik renkleri göster"}
-  </s-button>
+  <s-stack direction="block" gap="base">
+    <s-text-field
+      label="Renk ara"
+      placeholder="Türkçe veya İngilizce renk adı..."
+      value={colorSearch}
+      onInput={(event) => setColorSearch(event.currentTarget.value)}
+    />
+
+    <s-button
+      onClick={() => setShowOnlyMissingColors(!showOnlyMissingColors)}
+      variant="secondary"
+    >
+      {showOnlyMissingColors
+        ? "Tüm renkleri göster"
+        : "Sadece eksik renkleri göster"}
+    </s-button>
+
+    {colorSearch.trim() && (
+      <s-text>
+        {visibleColors.length} renk bulundu
+      </s-text>
+    )}
+  </s-stack>
 
 {showOnlyMissingColors && incompleteColors.length === 0 && (
   <s-text tone="success">
@@ -839,10 +876,13 @@ const optionTranslations = Object.values(
 />
 
   <s-stack direction="block" gap="base">
-    {(showOnlyMissingColors
-  ? incompleteColors
-  : sortedColorTranslations
-).map((color) => (
+    {colorSearch.trim() && visibleColors.length === 0 && (
+      <s-text>
+        Aramana uyan renk bulunamadı.
+      </s-text>
+    )}
+
+    {visibleColors.map((color) => (
       <s-box
         key={color.id}
         padding="base"
