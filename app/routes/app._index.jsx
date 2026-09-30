@@ -427,6 +427,22 @@ const [productSearch, setProductSearch] = useState("");
 
 const [showOnlyMissingColors, setShowOnlyMissingColors] = useState(false);
 const [colorSearch, setColorSearch] = useState("");
+const [editedValues, setEditedValues] = useState({});
+
+const getEditedValue = (key, originalValue = "") =>
+  Object.prototype.hasOwnProperty.call(editedValues, key)
+    ? editedValues[key]
+    : originalValue;
+
+const updateEditedValue = (key, value) => {
+  setEditedValues((current) => ({
+    ...current,
+    [key]: value,
+  }));
+};
+
+const isEdited = (key, originalValue = "") =>
+  getEditedValue(key, originalValue).trim() !== String(originalValue || "").trim();
 
 const productTranslationStatus = products.map((product) => {
   const translations = productTranslations[product.id] || [];
@@ -752,8 +768,21 @@ const optionTranslations = Object.values(
 <s-text-field
   label="İngilizce Başlık"
   name="translationValue"
-  value={product.titleTranslation}
+  value={getEditedValue(
+    `product:${product.id}:title`,
+    product.titleTranslation,
+  )}
+  onInput={(event) =>
+    updateEditedValue(
+      `product:${product.id}:title`,
+      event.currentTarget.value,
+    )
+  }
 />
+
+{isEdited(`product:${product.id}:title`, product.titleTranslation) && (
+  <s-text tone="warning">● Değiştirildi</s-text>
+)}
 
 <input
   type="hidden"
@@ -776,9 +805,23 @@ const optionTranslations = Object.values(
 <s-text-field
   label="İngilizce Açıklama"
   name="translationValue"
-  value={product.descriptionTranslation}
+  value={getEditedValue(
+    `product:${product.id}:body_html`,
+    product.descriptionTranslation,
+  )}
   multiline={4}
+  onInput={(event) =>
+    updateEditedValue(
+      `product:${product.id}:body_html`,
+      event.currentTarget.value,
+    )
+  }
 />
+
+{isEdited(
+  `product:${product.id}:body_html`,
+  product.descriptionTranslation,
+) && <s-text tone="warning">● Değiştirildi</s-text>}
 
 <input
   type="hidden"
@@ -908,14 +951,22 @@ const optionTranslations = Object.values(
         <s-text-field
           label="Çeviri"
           name="translationValue"
-          value={
-  existingTranslations[color.id]?.find(
-    (translation) => translation.key === "label"
-  )?.value ||
-  COLOR_SUGGESTIONS[color.label] ||
-  ""
-}
+          value={getEditedValue(
+            `color:${color.id}:label`,
+            color.existingTranslation || COLOR_SUGGESTIONS[color.label] || "",
+          )}
+          onInput={(event) =>
+            updateEditedValue(
+              `color:${color.id}:label`,
+              event.currentTarget.value,
+            )
+          }
         ></s-text-field>
+
+        {isEdited(
+          `color:${color.id}:label`,
+          color.existingTranslation || COLOR_SUGGESTIONS[color.label] || "",
+        ) && <s-text tone="warning">● Değiştirildi</s-text>}
 
         <input
           type="hidden"
