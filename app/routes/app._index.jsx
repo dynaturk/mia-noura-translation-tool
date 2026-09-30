@@ -423,6 +423,7 @@ export default function Index() {
 	const actionData = useActionData();
 
 const [showOnlyMissingProducts, setShowOnlyMissingProducts] = useState(false);
+const [productSearch, setProductSearch] = useState("");
 
 const [showOnlyMissingColors, setShowOnlyMissingColors] = useState(false);
 
@@ -471,6 +472,27 @@ const incompleteProducts = sortedProductTranslationStatus.filter(
   (product) =>
     !product.titleTranslated || !product.descriptionTranslated,
 );
+
+const normalizedProductSearch = productSearch.trim().toLocaleLowerCase("tr-TR");
+
+const visibleProducts = (
+  showOnlyMissingProducts
+    ? incompleteProducts
+    : sortedProductTranslationStatus
+).filter((product) => {
+  if (!normalizedProductSearch) return true;
+
+  const searchableText = [
+    product.title,
+    product.titleTranslation,
+    product.descriptionTranslation,
+  ]
+    .filter(Boolean)
+    .join(" ")
+    .toLocaleLowerCase("tr-TR");
+
+  return searchableText.includes(normalizedProductSearch);
+});
 
 const colorTranslations = metaobjects
 
@@ -646,14 +668,29 @@ const optionTranslations = Object.values(
     : "✓ Tüm ürün başlıkları ve açıklamaları çevrildi"}
 </s-text>
 
-<s-button
-  onClick={() => setShowOnlyMissingProducts(!showOnlyMissingProducts)}
-  variant="secondary"
->
-  {showOnlyMissingProducts
-    ? "Tüm ürünleri göster"
-    : "Sadece eksikleri göster"}
-</s-button>
+<s-stack direction="block" gap="base">
+  <s-text-field
+    label="Ürün ara"
+    placeholder="Ürün kodu, ürün adı, İngilizce başlık veya açıklama..."
+    value={productSearch}
+    onInput={(event) => setProductSearch(event.currentTarget.value)}
+  />
+
+  <s-button
+    onClick={() => setShowOnlyMissingProducts(!showOnlyMissingProducts)}
+    variant="secondary"
+  >
+    {showOnlyMissingProducts
+      ? "Tüm ürünleri göster"
+      : "Sadece eksikleri göster"}
+  </s-button>
+
+  {productSearch.trim() && (
+    <s-text>
+      {visibleProducts.length} ürün bulundu
+    </s-text>
+  )}
+</s-stack>
 
 {showOnlyMissingProducts && incompleteProducts.length === 0 && (
   <s-text tone="success">
@@ -674,10 +711,13 @@ const optionTranslations = Object.values(
 />
 
   <s-stack direction="block" gap="base">
-    {(showOnlyMissingProducts
-  ? incompleteProducts
-  : sortedProductTranslationStatus
-).map((product) => (
+    {visibleProducts.length === 0 && (
+      <s-text>
+        Aramana uyan ürün bulunamadı.
+      </s-text>
+    )}
+
+    {visibleProducts.map((product) => (
       <s-box
         key={product.id}
         padding="base"
